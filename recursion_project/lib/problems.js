@@ -17,7 +17,10 @@
 // lucasNumber(5)   // => 11
 // lucasNumber(9)   // => 76
 function lucasNumber(n) {
+    if (n === 0) return 2;
+    if (n === 1) return 1;
 
+    return lucasNumber(n - 1) + lucasNumber(n - 2);
 }
 
 
@@ -33,7 +36,8 @@ function lucasNumber(n) {
 // sumArray([5, 2])         // => 7
 // sumArray([4, 10, -1, 2]) // => 15
 function sumArray(array) {
-
+    if (!array.length) return 0;
+    return array[0] + sumArray(array.slice(1));
 }
 
 
@@ -49,7 +53,9 @@ function sumArray(array) {
 // reverseString("internet")    // => "tenretni"
 // reverseString("friends")     // => "sdneirf"
 function reverseString(str) {
+    if (str.length < 2) return str;
 
+    return reverseString(str.slice(1)) + str[0];
 }
 
 
@@ -70,7 +76,12 @@ function reverseString(str) {
 // pow(3, 4)    // => 81
 // pow(2, -5)   // => 0.03125
 function pow(base, exponent) {
-
+    if (exponent === 0) return 1;
+    if (exponent > 0) {
+        return base * pow(base, exponent - 1);
+    } else {
+        return 1 / base * pow(base, exponent + 1);
+    }
 }
 
 
@@ -103,7 +114,18 @@ function pow(base, exponent) {
 //     2-dimensional array: [['some data']]
 //     3-dimensional array: [[['some data']]]
 function flatten(data) {
+    let sol = [];
+    
+    data.forEach(el => {
+        if (Array.isArray(el)) {
+            sol = sol.concat(flatten(el));
+        } else {
+            sol.push(el);
+        }
+        // console.log(sol);
+    })
 
+    return sol;
 }
 
 // Write a function, fileFinder(directories, targetFile), that accepts an object representing directories and a string respresenting a filename.
@@ -146,7 +168,12 @@ function flatten(data) {
 // fileFinder(desktop, 'everlong.flac');            // => true
 // fileFinder(desktop, 'sequoia.jpeg');             // => false
 function fileFinder(directories, targetFile) {
-
+    for (let key in directories) {
+        if (key === targetFile || fileFinder(directories[key], targetFile)) {
+            return true;
+        }
+    }
+    return false;
 }
 
 
@@ -160,7 +187,20 @@ function fileFinder(directories, targetFile) {
 // pathFinder(desktop, 'everlong.flac'));       // => '/music/genres/rock/everlong.flac'
 // pathFinder(desktop, 'honeybadger.png'));     // => null
 function pathFinder(directories, targetFile) {
+    for (let key in directories) {
+        if (key === targetFile) {
+            return '/' + targetFile;
+        }
+        
+        let subDir = directories[key];
+        let subPath = pathFinder(subDir, targetFile);
+        
+        if (subPath) {
+            return key + subPath;
+        }
+    }
 
+    return null;
 }
 
 
